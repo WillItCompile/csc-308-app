@@ -9,8 +9,11 @@ function TableHeader() {
     </thead>
   );
 }
-
+console.log("table line 12")
 function TableBody(props) {
+
+  console.log("table line 15")
+
   const rows = props.characterData.map((row, index) => {
     return (
       <tr key={index}>
@@ -31,14 +34,18 @@ function TableBody(props) {
        </tbody>
    );
 }
+console.log("table line 40")
 
 function Table(props) {
+  console.log("table line 43")
+
   return (
     <table>
       <TableHeader />
       <TableBody
         characterData={props.characterData}
         removeCharacter={props.removeCharacter}
+        
       />
     </table>
   );
