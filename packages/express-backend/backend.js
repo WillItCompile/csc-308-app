@@ -48,11 +48,65 @@ const users = {
       res.send(users);
     }
   });
+
+  const findUserById = (id) =>
+    users["users_list"].find((user) => user["id"] === id);
+  
+  app.get("/users/:id", (req, res) => {
+    const id = req.params["id"]; //or req.params.id
+    let result = findUserById(id);
+    if (result === undefined) {
+      res.status(404).send("Resource not found.");
+    } else {
+      res.send(result);
+    }
+  });
+
 app.use(express.json());
 
 app.get("/users", (req, res) => {
     res.send(users);
   });  
+
+  const addUser = (user) => {
+    users["users_list"].push(user);
+    return user;
+  };
+  
+  app.post("/users", (req, res) => {
+    const userToAdd = req.body;
+    addUser(userToAdd);
+    res.send();
+  });
+
+  const removeUser = (userId) => {
+    const userIndex = users["users_list"].findIndex((user) => user.id === userId);
+    return users["users_list"].splice(userIndex,1)[0];
+  };
+  
+  app.delete("/users/:id", (req, res) => {
+    const userToRemove = req.params.id;
+    const removedUser = removeUser(userToRemove);
+    res.send(removedUser);
+  });
+
+  const findUserByNameAndID = (name,id) => {
+    return users["users_list"].filter(
+      (user) => user["name"] === name && user["id"] === id
+    );
+  };
+  
+  app.get("/users", (req, res) => {
+    const name = req.query.name;
+    const userId = req.query.id;
+    if (name !== undefined && userId !== undefined) {
+      let result = findUserByNameAndID(name,userId);
+      result = { users_list: result };
+      res.send(result);
+    } else {
+      res.send(users);
+    }
+  });
 
 app.listen(port, () => {
   console.log(
