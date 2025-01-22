@@ -1,7 +1,10 @@
 // backend.js
 import express from "express";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
+app.use(express.json());
 const port = 8000;
 const users = {
     users_list: [
@@ -39,6 +42,12 @@ const users = {
     );
   };
   
+  const findUserByName = (name) => {
+    return users["users_list"].filter(
+      (user) => user["name"] === name
+    );
+  };
+
   app.get("/users", (req, res) => {
     const name = req.query.name;
     const id = req.query["id"];
@@ -46,26 +55,14 @@ const users = {
       let result = findUserByNameAndID(name,id);
       result = { users_list: result };
       res.send(result);
-    } else {
-      res.send(users);
+    } else if (name != undefined){
+        let result = findUserByName(name);
+        result = { users_list: result };
+        res.send(result);
     }
-  });
+    else{
+        res.send(users);
 
-
-  const findUserByName = (name) => {
-    return users["users_list"].filter(
-      (user) => user["name"] === name
-    );
-  };
-  
-  app.get("/users", (req, res) => {
-    const name = req.query.name;
-    if (name != undefined) {
-      let result = findUserByName(name);
-      result = { users_list: result };
-      res.send(result);
-    } else {
-      res.send(users);
     }
   });
 
@@ -73,7 +70,7 @@ const users = {
     users["users_list"].find((user) => user["id"] === id);
   
   app.get("/users/:id", (req, res) => {
-    const id = req.params["id"]; //or req.params.id
+    const id = req.params["id"]; 
     let result = findUserById(id);
     if (result === undefined) {
       res.status(404).send("Resource not found.");
@@ -81,8 +78,7 @@ const users = {
       res.send(result);
     }
   });
-
-app.use(express.json());
+  
 
 app.get("/users", (req, res) => {
     res.send(users);
@@ -94,9 +90,10 @@ app.get("/users", (req, res) => {
   };
   
   app.post("/users", (req, res) => {
+    req.body.id = Math.floor(Math.random()*1000000);
     const userToAdd = req.body;
     addUser(userToAdd);
-    res.send();
+    res.send(201).json(userToAdd);
   });
 
   const removeUser = (userId) => {
@@ -106,8 +103,8 @@ app.get("/users", (req, res) => {
   
   app.delete("/users/:id", (req, res) => {
     const userToRemove = req.params.id;
-    const removedUser = removeUser(userToRemove);
-    res.send(removedUser);
+    removeUser(userToRemove);
+    res.send(204);
   });
 
   

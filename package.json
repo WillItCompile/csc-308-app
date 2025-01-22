@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-   
-    "dev":" npm -w react-frontend run dev",
+    "dev": " npm -w react-frontend run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "description": ""
-,
-    "workspaces": [
-        "packages/*"
-    ]
+  "description": "",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
 }
